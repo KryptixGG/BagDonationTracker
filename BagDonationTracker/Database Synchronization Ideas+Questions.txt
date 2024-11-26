@@ -1,0 +1,58 @@
+How to know, if database is up to date, when comparing?
+	1. maybe Hash based on entire database, or is that too much processing?
+!	2. increasing database version numbers
+		- requires saving other peoples version numbers
+		- some system to make these impossible to reach maximum
+!!!	3. Have latest Sync Timestamps for every known player
+
+
+How to sync? Allways have both sending full database to each other requires too much sending
+	1. add a mark to every db entry about who this was already send to
+		- only works with small amount of users
+		- dont know how much faster this is in terms of computing
+	2. add a mark to every db entry about who this WASNT already send to
+		- only works with small amount of users
+		- dont know how much faster this is in terms of computing
+		- dont know if this is better or worse, than 1.
+	3. have a seperate log with all entires modified + timestamp, then add a mark for all known users this was send to. Delete entries that were send to all known users.
+		When adding new known user, do a full sync of the entire Database
+			- log mights get extremely big, if 1 known user doesnt login often or quits entirely
+				- maybe delete known users after long time without sync
+					- what is "long", so that the log doesnt get too big, but is still realistic for users to be this active
+!			- helps with the issue of how to handle manually deleted entries
+!!	4. have a hash for each entry for faster comparison on full database syncs
+!!!	5. im chatGPT log "Data Synchronization in WoW" scheint mir n guter Ansatz zu sein
+		- am Anfang ohne Bloom Filter, den kann ich ja später hinzufügen, falls ich will und es nötig ist
+
+
+
+How to handle manually deleted entries?
+!	1. I dont, there is no manual deletion. If there is need for that - just send that guy bags manually.
+
+
+
+----------------------------------------------------------------------------------------------------------------------
+When to sync?
+	1. at addon startup and button click
+		- only possible, if sync doesnt require too much computing
+	2. only at button click
+!!!	3. check at addon startup and print message if sync necessary, but only DO at button click
+		- requires users to read chat at startup
+			- maybe add a reminder into addon-options next to the advertising and recipient collection button
+
+
+
+If only sync with known players - how to know players?
+	1. hardcode my name and take a List from me
+		- prevents all abuse from random players
+		- requires me to be online very often
+	2. hardcode my name and take a List from me, but use all players on the List in the future
+		- prevents some abuse from random players
+		- will work even when I stop being online
+		- 1 known player adding a abusive player to the List corrupts it forever
+!!	3. have players manually add players to a "sync with xy"-list, (a. maybe hardcode me)
+		- more work for users
+!		a. when I quit, might be abuseable by someone taking my name in future
+			- could be too unlikely to bother
+			- ensures people have some data from me at the start, when I am still active
+
